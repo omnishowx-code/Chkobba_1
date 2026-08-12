@@ -1,1 +1,354 @@
-<img src="machine.jpg" width="300">
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة الشكبة التونسية 🇹🇳 - Chkobba</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1b4d3e;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            margin: 5px 0;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            background: #14382c;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            border: 3px solid #ffd700;
+        }
+        .scoreboard {
+            display: flex;
+            justify-content: space-between;
+            background: #0f2b21;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            border: 1px solid #2e6b54;
+        }
+        .section-title {
+            font-size: 1.1em;
+            color: #a8d5ba;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #2e6b54;
+            padding-bottom: 4px;
+        }
+        .cards-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            min-height: 110px;
+            align-items: center;
+            padding: 10px;
+            background: #0f2b21;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px dashed #2e6b54;
+        }
+        .card {
+            width: 70px;
+            height: 100px;
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            user-select: none;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            background-color: #f0f0f0;
+        }
+        .card.red {
+            color: #d32f2f;
+        }
+        .card.black {
+            color: #212121;
+        }
+        .card-back {
+            background: #b71c1c;
+            border: 2px solid #fff;
+            width: 70px;
+            height: 100px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .log-box {
+            background: #0a1f17;
+            padding: 10px 15px;
+            border-radius: 8px;
+            height: 80px;
+            overflow-y: auto;
+            font-size: 0.9em;
+            color: #ddd;
+            border: 1px solid #2e6b54;
+        }
+        .btn {
+            background: #ffd700;
+            color: #1b4d3e;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #ffea75;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>الشكبة التونسية 🇹🇳</h1>
+    
+    <div class="game-container">
+        <div class="scoreboard">
+            <div>الخصم (الكمبيوتر): <span id="opp-score">0</span> نقاط | الأوراق بالرزمة: <span id="deck-count">33</span></div>
+            <div>نقاطك: <span id="player-score">0</span></div>
+        </div>
+
+        <div>
+            <div class="section-title">أوراق الخصم</div>
+            <div class="cards-container" id="opp-hand"></div>
+        </div>
+
+        <div>
+            <div class="section-title">أوراق الطاولة</div>
+            <div class="cards-container" id="table-cards"></div>
+        </div>
+
+        <div>
+            <div class="section-title">أوراقك (اضغط على ورقة للعبها)</div>
+            <div class="cards-container" id="player-hand"></div>
+        </div>
+
+        <div>
+            <div class="section-title">سجل اللعبة</div>
+            <div class="log-box" id="game-log">مرحباً بك في لعبة الشكبة التونسية! ابدأ بلعب ورقة.</div>
+        </div>
+        
+        <button class="btn" id="restart-btn" onclick="initGame()" style="display:none;">إعادة بدء اللعبة</button>
+    </div>
+
+<script>
+    const suits = [
+        { key: 'diamonds', symbol: '♦', color: 'red' },
+        { key: 'hearts', symbol: '♥', color: 'red' },
+        { key: 'clubs', symbol: '♣', color: 'black' },
+        { key: 'spades', symbol: '♠', color: 'black' }
+    ];
+    
+    const cardNames = { 1: 'As', 2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: 'Moujira', 9: 'Kawel', 10: 'Ray' };
+
+    let deck = [];
+    let table = [];
+    let playerHand = [];
+    let oppHand = [];
+    let playerCaptured = [];
+    let oppCaptured = [];
+    let playerChkobbas = 0;
+    let oppChkobbas = 0;
+    let lastCapturer = null;
+
+    function initGame() {
+        deck = [];
+        table = [];
+        playerHand = [];
+        oppHand = [];
+        playerCaptured = [];
+        oppCaptured = [];
+        playerChkobbas = 0;
+        oppChkobbas = 0;
+        lastCapturer = null;
+
+        let id = 1;
+        suits.forEach(s => {
+            for (let v = 1; v <= 10; v++) {
+                deck.push({ id: id++, suit: s.key, symbol: s.symbol, value: v, name: cardNames[v], color: s.color });
+            }
+        });
+
+        // خلط الورق
+        deck.sort(() => Math.random() - 0.5);
+
+        // توزيع 4 أوراق على الطاولة
+        for (let i = 0; i < 4; i++) {
+            table.push(deck.pop());
+        }
+
+        dealHands();
+        updateUI();
+        log("تم بدء جولة جديدة. دورك للعب.");
+        document.getElementById('restart-btn').style.display = 'none';
+    }
+
+    function dealHands() {
+        if (deck.length >= 3) {
+            playerHand = [deck.pop(), deck.pop(), deck.pop()];
+            oppHand = [deck.pop(), deck.pop(), deck.pop()];
+        }
+    }
+
+    function log(text) {
+        const box = document.getElementById('game-log');
+        box.innerHTML += `<br>${text}`;
+        box.scrollTop = box.scrollHeight;
+    }
+
+    function playCard(index) {
+        let played = playerHand.splice(index, 1)[0];
+        processTurn(played, 'player');
+
+        // فحص انتهاء الأيدي لتوزيع أوراق جديدة أو إنهاء الجولة
+        if (playerHand.length === 0 && oppHand.length === 0) {
+            if (deck.length > 0) {
+                dealHands();
+            } else {
+                endRound();
+                return;
+            }
+        }
+
+        // دور الكمبيوتر البسيط
+        if (oppHand.length > 0) {
+            setTimeout(() => {
+                let aiIdx = Math.floor(Math.random() * oppHand.length);
+                let aiPlayed = oppHand.splice(aiIdx, 1)[0];
+                processTurn(aiPlayed, 'opponent');
+                updateUI();
+            }, 600);
+        }
+
+        updateUI();
+    }
+
+    function processTurn(playedCard, turnOwner) {
+        let captured = turnOwner === 'player' ? playerCaptured : oppCaptured;
+        
+        // 1. البحث عن ورقة منفردة مطابقة (لها الأولوية)
+        let exactIndex = table.findIndex(c => c.value === playedCard.value);
+        let cardsToCapture = [];
+
+        if (exactIndex !== -1) {
+            cardsToCapture.push(table[exactIndex]);
+            table.splice(exactIndex, 1);
+        } else {
+            // 2. البحث عن مجموع بسيط
+            let foundCombo = findCombination(playedCard.value, table);
+            if (foundCombo.length > 0) {
+                foundCombo.forEach(c => {
+                    let idx = table.indexOf(c);
+                    if (idx !== -1) table.splice(idx, 1);
+                    cardsToCapture.push(c);
+                });
+            }
+        }
+
+        if (cardsToCapture.length > 0) {
+            captured.push(playedCard, ...cardsToCapture);
+            lastCapturer = turnOwner;
+            
+            // فحص الشكبة
+            if (table.length === 0 && deck.length > 0) {
+                if (turnOwner === 'player') {
+                    playerChkobbas++;
+                    log("🎉 شكبة! لقد أفرغت الطاولة ونلت نقطة!");
+                } else {
+                    oppChkobbas++;
+                    log("⚠️ الخصم حقق شكبة وأخذ نقطة!");
+                }
+            } else {
+                log(`${turnOwner === 'player' ? 'أنت' : 'الخصم'} قمت بأخذ أوراق.`);
+            }
+        } else {
+            table.push(playedCard);
+            log(`${turnOwner === 'player' ? 'أنت' : 'الخصم'} وضعت ${playedCard.name} ${playedCard.symbol} على الطاولة.`);
+        }
+    }
+
+    function findCombination(target, list) {
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].value === target) return [list[i]];
+            for (let j = i + 1; j < list.length; j++) {
+                if (list[i].value + list[j].value === target) return [list[i], list[j]];
+            }
+        }
+        return [];
+    }
+
+    function endRound() {
+        if (lastCapturer === 'player') {
+            playerCaptured.push(...table);
+        } else if (lastCapturer === 'opponent') {
+            oppCaptured.push(...table);
+        }
+        table = [];
+
+        let pScore = playerChkobbas;
+        let oScore = oppChkobbas;
+        
+        if (playerCaptured.length > oppCaptured.length) pScore++;
+        else if (oppCaptured.length > playerCaptured.length) oScore++;
+
+        let pDinari = playerCaptured.filter(c => c.suit === 'diamonds').length;
+        let oDinari = oppCaptured.filter(c => c.suit === 'diamonds').length;
+        if (pDinari > oDinari) pScore++;
+        else if (oDinari > pDinari) oScore++;
+
+        if (playerCaptured.some(c => c.value === 7 && c.suit === 'diamonds')) pScore++;
+        if (oppCaptured.some(c => c.value === 7 && c.suit === 'diamonds')) oScore++;
+
+        log(`انتهت الجولة! نقاطك: ${pScore} | نقاط الخصم: ${oScore}`);
+        document.getElementById('player-score').innerText = pScore;
+        document.getElementById('opp-score').innerText = oScore;
+        document.getElementById('restart-btn').style.display = 'block';
+    }
+
+    function updateUI() {
+        document.getElementById('deck-count').innerText = deck.length;
+        
+        let oppHtml = '';
+        oppHand.forEach(() => { oppHtml += `<div class="card-back"></div>`; });
+        document.getElementById('opp-hand').innerHTML = oppHtml;
+
+        let tableHtml = '';
+        table.forEach(c => {
+            tableHtml += `<div class="card ${c.color}"><span>${c.name}</span><span style="font-size:1.5em; text-align:center;">${c.symbol}</span><span style="text-align:left;">${c.value}</span></div>`;
+        });
+        document.getElementById('table-cards').innerHTML = tableHtml;
+
+        let playerHtml = '';
+        playerHand.forEach((c, idx) => {
+            playerHtml += `<div class="card ${c.color}" onclick="playCard(${idx})"><span>${c.name}</span><span style="font-size:1.5em; text-align:center;">${c.symbol}</span><span style="text-align:left;">${c.value}</span></div>`;
+        });
+        document.getElementById('player-hand').innerHTML = playerHtml;
+    }
+
+    initGame();
+</script>
+
+</body>
+</html>
