@@ -14,21 +14,63 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
-        h1 {
-            margin: 5px 0;
-            color: #ffd700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-        .game-container {
+
+        /* شاشة البداية الرئيسية */
+        .screen {
+            display: none;
             width: 100%;
             max-width: 800px;
             background: #14382c;
             border-radius: 15px;
-            padding: 20px;
+            padding: 30px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.4);
             border: 3px solid #ffd700;
+            text-align: center;
+            box-sizing: border-box;
         }
+
+        .screen.active {
+            display: block;
+        }
+
+        h1 {
+            margin: 10px 0 20px 0;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-size: 2.5em;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            background: #ffd700;
+            color: #1b4d3e;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 220px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            background: #ffea75;
+            transform: translateY(-3px);
+        }
+
+        /* تصميم صفحة اللعب */
         .scoreboard {
             display: flex;
             justify-content: space-between;
@@ -39,25 +81,30 @@
             margin-bottom: 20px;
             border: 1px solid #2e6b54;
         }
+
         .section-title {
             font-size: 1.1em;
             color: #a8d5ba;
             margin-bottom: 8px;
             border-bottom: 1px dashed #2e6b54;
             padding-bottom: 4px;
+            text-align: right;
         }
+
         .cards-container {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             min-height: 110px;
             align-items: center;
+            justify-content: center;
             padding: 10px;
             background: #0f2b21;
             border-radius: 10px;
             margin-bottom: 20px;
             border: 1px dashed #2e6b54;
         }
+
         .card {
             width: 70px;
             height: 100px;
@@ -75,16 +122,15 @@
             transition: transform 0.2s, background-color 0.2s;
             user-select: none;
         }
+
         .card:hover {
             transform: translateY(-5px);
             background-color: #f0f0f0;
         }
-        .card.red {
-            color: #d32f2f;
-        }
-        .card.black {
-            color: #212121;
-        }
+
+        .card.red { color: #d32f2f; }
+        .card.black { color: #212121; }
+
         .card-back {
             background: #b71c1c;
             border: 2px solid #fff;
@@ -93,6 +139,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
+
         .log-box {
             background: #0a1f17;
             padding: 10px 15px;
@@ -102,31 +149,40 @@
             font-size: 0.9em;
             color: #ddd;
             border: 1px solid #2e6b54;
-        }
-        .btn {
-            background: #ffd700;
-            color: #1b4d3e;
-            border: none;
-            padding: 10px 20px;
-            font-size: 1em;
-            font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: background 0.2s;
-        }
-        .btn:hover {
-            background: #ffea75;
+            text-align: right;
         }
     </style>
 </head>
 <body>
 
-    <h1>الشكبة التونسية 🇹🇳</h1>
-    
-    <div class="game-container">
+    <!-- 1. شاشة البداية الرئيسية (Home Screen) -->
+    <div id="home-screen" class="screen active">
+        <h1>الشكبة التونسية 🇹🇳</h1>
+        <p style="color: #a8d5ba; font-size: 1.1em; margin-bottom: 20px;">اللعبة الورقية التونسية الأصلية على جهازك</p>
+        <div class="menu-buttons">
+            <button class="btn" onclick="startGame()">بدء اللعب</button>
+            <button class="btn" onclick="showSettings()">الإعدادات</button>
+        </div>
+    </div>
+
+    <!-- 2. شاشة الإعدادات -->
+    <div id="settings-screen" class="screen">
+        <h1>إعدادات اللعبة ⚙️</h1>
+        <p style="color: #a8d5ba;">قريباً سيتم إضافة تخصيص مستويات الذكاء الاصطناعي وأهداف النقاط هنا!</p>
+        <div class="menu-buttons">
+            <button class="btn" onclick="showHome()">العودة للقائمة</button>
+        </div>
+    </div>
+
+    <!-- 3. شاشة اللعب الفعلية -->
+    <div id="game-screen" class="screen" style="text-align: right;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="margin: 0; color: #ffd700;">طاولة الشكبة</h2>
+            <button class="btn" style="width: auto; padding: 5px 15px; font-size: 0.9em;" onclick="showHome()">الخروج للقائمة</button>
+        </div>
+
         <div class="scoreboard">
-            <div>الخصم (الكمبيوتر): <span id="opp-score">0</span> نقاط | الأوراق بالرزمة: <span id="deck-count">33</span></div>
+            <div>الخصم (الكمبيوتر): <span id="opp-score">0</span> نقاط | الرزمة: <span id="deck-count">33</span></div>
             <div>نقاطك: <span id="player-score">0</span></div>
         </div>
 
@@ -147,10 +203,10 @@
 
         <div>
             <div class="section-title">سجل اللعبة</div>
-            <div class="log-box" id="game-log">مرحباً بك في لعبة الشكبة التونسية! ابدأ بلعب ورقة.</div>
+            <div class="log-box" id="game-log">مرحباً بك في الشكبة التونسية!</div>
         </div>
         
-        <button class="btn" id="restart-btn" onclick="initGame()" style="display:none;">إعادة بدء اللعبة</button>
+        <button class="btn" id="restart-btn" onclick="initGame()" style="display:none; margin: 15px auto 0 auto; display:block;">إعادة بدء الجولة</button>
     </div>
 
 <script>
@@ -173,6 +229,20 @@
     let oppChkobbas = 0;
     let lastCapturer = null;
 
+    // التنقل بين الشاشات
+    function switchScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function showHome() { switchScreen('home-screen'); }
+    function showSettings() { switchScreen('settings-screen'); }
+    
+    function startGame() {
+        switchScreen('game-screen');
+        initGame();
+    }
+
     function initGame() {
         deck = [];
         table = [];
@@ -191,17 +261,15 @@
             }
         });
 
-        // خلط الورق
         deck.sort(() => Math.random() - 0.5);
 
-        // توزيع 4 أوراق على الطاولة
         for (let i = 0; i < 4; i++) {
             table.push(deck.pop());
         }
 
         dealHands();
         updateUI();
-        log("تم بدء جولة جديدة. دورك للعب.");
+        document.getElementById('game-log').innerHTML = "تم بدء جولة جديدة. دورك للعب.";
         document.getElementById('restart-btn').style.display = 'none';
     }
 
@@ -222,7 +290,6 @@
         let played = playerHand.splice(index, 1)[0];
         processTurn(played, 'player');
 
-        // فحص انتهاء الأيدي لتوزيع أوراق جديدة أو إنهاء الجولة
         if (playerHand.length === 0 && oppHand.length === 0) {
             if (deck.length > 0) {
                 dealHands();
@@ -232,7 +299,6 @@
             }
         }
 
-        // دور الكمبيوتر البسيط
         if (oppHand.length > 0) {
             setTimeout(() => {
                 let aiIdx = Math.floor(Math.random() * oppHand.length);
@@ -248,7 +314,6 @@
     function processTurn(playedCard, turnOwner) {
         let captured = turnOwner === 'player' ? playerCaptured : oppCaptured;
         
-        // 1. البحث عن ورقة منفردة مطابقة (لها الأولوية)
         let exactIndex = table.findIndex(c => c.value === playedCard.value);
         let cardsToCapture = [];
 
@@ -256,7 +321,6 @@
             cardsToCapture.push(table[exactIndex]);
             table.splice(exactIndex, 1);
         } else {
-            // 2. البحث عن مجموع بسيط
             let foundCombo = findCombination(playedCard.value, table);
             if (foundCombo.length > 0) {
                 foundCombo.forEach(c => {
@@ -271,7 +335,6 @@
             captured.push(playedCard, ...cardsToCapture);
             lastCapturer = turnOwner;
             
-            // فحص الشكبة
             if (table.length === 0 && deck.length > 0) {
                 if (turnOwner === 'player') {
                     playerChkobbas++;
@@ -346,8 +409,6 @@
         });
         document.getElementById('player-hand').innerHTML = playerHtml;
     }
-
-    initGame();
 </script>
 
 </body>
