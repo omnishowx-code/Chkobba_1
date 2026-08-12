@@ -46,7 +46,7 @@
             overflow: hidden;
         }
 
-        /* الشاشات */
+        /* نظام الشاشات الأساسي */
         .screen {
             display: none;
             flex-direction: column;
@@ -57,7 +57,7 @@
         }
 
         .screen.active {
-            display: flex;
+            display: flex !important;
         }
 
         /* شاشة البداية */
@@ -138,8 +138,8 @@
 
         /* تصميم البطاقات الفخم */
         .card {
-            width: 75px;
-            height: 110px;
+            width: 70px;
+            height: 100px;
             background: var(--card-white);
             border-radius: 8px;
             display: flex;
@@ -147,12 +147,11 @@
             justify-content: space-between;
             padding: 6px;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.4);
             cursor: pointer;
             transition: all 0.2s;
             user-select: none;
-            position: relative;
         }
 
         .card:hover {
@@ -164,8 +163,8 @@
         .card.black { color: var(--card-black); }
 
         .card-back {
-            width: 75px;
-            height: 110px;
+            width: 70px;
+            height: 100px;
             background: linear-gradient(135deg, #b71c1c, #7f0000);
             border: 2px solid #fff;
             border-radius: 8px;
@@ -173,9 +172,9 @@
         }
 
         .section-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #a8d5ba;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             font-weight: bold;
         }
 
@@ -183,7 +182,7 @@
             background: #0d231c;
             padding: 8px 15px;
             border-radius: 8px;
-            height: 45px;
+            height: 40px;
             overflow-y: auto;
             font-size: 0.85rem;
             color: #ffd700;
@@ -191,7 +190,7 @@
             text-align: center;
         }
 
-        /* نافذة منبثقة للنتائج والتعلم والبروفايل */
+        /* النوافذ المنبثقة */
         .modal {
             display: none;
             position: absolute;
@@ -208,11 +207,9 @@
             padding: 30px;
             border-radius: 15px;
             width: 80%;
-            max-width: 500px;
+            max-width: 400px;
             text-align: center;
             box-shadow: var(--shadow);
-            max-height: 80vh;
-            overflow-y: auto;
         }
 
         .close-btn {
@@ -226,7 +223,7 @@
             margin-top: 15px;
         }
 
-        /* تنبيه الشكبة */
+        /* تنبيه الشكبة المتحرك */
         #chkobba-alert {
             position: absolute;
             top: 40%;
@@ -234,9 +231,9 @@
             transform: translate(-50%, -50%) scale(0);
             background: rgba(255, 215, 0, 0.95);
             color: #111;
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: bold;
-            padding: 15px 40px;
+            padding: 15px 35px;
             border-radius: 20px;
             box-shadow: 0 0 30px var(--gold);
             z-index: 50;
@@ -252,7 +249,7 @@
 
 <div class="container">
     
-    <!-- تنبيه الشكبة المتحرك -->
+    <!-- تنبيه الشكبة -->
     <div id="chkobba-alert">🔥 CHKOBBA! 🔥</div>
 
     <!-- 1. شاشة البداية (Home Page) -->
@@ -280,8 +277,8 @@
     <!-- 2. شاشة اللعب الرئيسية (Game Screen) -->
     <div id="game-screen" class="screen">
         <div class="game-header">
-            <div>الخصم: <span id="opp-score-lbl">0</span> نقطة</div>
-            <div>الرунд: <span id="round-num">1</span> | الباقي: <span id="deck-count">40</span></div>
+            <div>الخصم: <span id="opp-score-lbl">0</span> شكبة</div>
+            <div>روند: <span id="round-num">1</span> | الباقي: <span id="deck-count">40</span></div>
             <div>رصيدك: <span id="player-match-score">100</span> نقطة</div>
         </div>
 
@@ -297,54 +294,51 @@
             </div>
 
             <div>
-                <div class="section-label">أوراقك (اختر ورقة للعب)</div>
+                <div class="section-label">أوراقك (اضغط للعب الورقة)</div>
                 <div class="cards-container" id="player-hand-container"></div>
             </div>
         </div>
 
-        <div class="log-box" id="game-log">مرحباً بك في جلسة الشكبة! دورك للبدء.</div>
+        <div class="log-box" id="game-log">مرحباً بك في جلسة الشكبة! اختر ورقة للبدء.</div>
     </div>
 
-    <!-- 3. شاشة تعلم اللعبة (Tutorial) -->
+    <!-- 3. شاشة تعلم اللعبة -->
     <div id="tutorial-screen" class="screen" style="text-align: right;">
         <h2 style="color: var(--gold); text-align: center;">قواعد وتعليمات الشكبة 🇹🇳</h2>
         <div style="background: #0d231c; padding: 15px; border-radius: 10px; line-height: 1.6; font-size: 0.95rem;">
-            <p><b>1. الأوراق:</b> تتكون اللعبة من 40 ورقة مقسمة على 4 أشكال (ديناري ♦، كوبة ♥، سباتي ♣، بستوني ♠).</p>
-            <p><b>2. القيم:</b> من 1 إلى 7 حسب الرقم، ثم 8 (موجيرة)، 9 (كاول)، 10 (راي).</p>
-            <p><b>3. الأخذ:</b> تلعب ورقة لتأخذ ورقة مطابقة لها في القيمة، أو مجموعة أوراق يساوي مجموعها قيمة ورقتك.</p>
-            <p><b>4. أولوية المطابقة:</b> إذا وجدت ورقة منفردة مطابقة لقيمتك، فلها الأولوية المطلقة على أخذ المجموعات.</p>
-            <p><b>5. الشكبة:</b> أخذ جميع أوراق الطاولة يمنحك نقطة شكبة فورية (+1).</p>
-            <p><b>6. نهاية الجولة:</b> تُحسب النقاط بناءً على الأوراق، الديناري، سبعة الكارو (7♦)، والسبعات (البرميلة).</p>
+            <p><b>1. الأوراق:</b> تتكون اللعبة من 40 ورقة (ديناري ♦، كوبة ♥، سباتي ♣، بستوني ♠).</p>
+            <p><b>2. القيم:</b> من 1 إلى 7، ثم 8 (موجيرة)، 9 (كاول)، 10 (راي).</p>
+            <p><b>3. الأخذ:</b> تلعب ورقة لتأخذ ورقة مطابقة لها، أو مجموعة أوراق يساوي مجموعها قيمة ورقتك.</p>
+            <p><b>4. الشكبة:</b> أخذ جميع أوراق الطاولة يمنحك نقطة شكبة فورية (+1).</p>
         </div>
         <button class="menu-btn" onclick="openScreen('home-screen')" style="margin: 20px auto 0 auto; display: block;">العودة للقائمة</button>
     </div>
 
-    <!-- 4. شاشة الملف الشخصي (Profile) -->
+    <!-- 4. شاشة الملف الشخصي -->
     <div id="profile-screen" class="screen" style="text-align: center;">
         <h2 style="color: var(--gold);">الملف الشخصي</h2>
         <div style="background: #0d231c; padding: 20px; border-radius: 10px; display: inline-block; margin: 20px auto; text-align: right; width: 80%;">
-            <p>👤 <b>اسم اللاعب:</b> يوسف</p>
+            <p>👤 <b>اسم اللاعب:</b> اسماعيل</p>
             <p>⭐ <b>الرصيد الحالي:</b> <span id="prof-score">100</span> نقطة</p>
-            <p>🏆 <b>المستوى:</b> محترف مقهى</p>
             <p>🎯 <b>الانتصارات:</b> <span id="prof-wins">0</span></p>
             <p>❌ <b>الخسائر:</b> <span id="prof-losses">0</span></p>
         </div>
         <button class="menu-btn" onclick="openScreen('home-screen')" style="margin: 0 auto; display: block;">العودة للقائمة</button>
     </div>
 
-    <!-- 5. شاشة الإحصائيات (Statistics) -->
+    <!-- 5. شاشة الإحصائيات -->
     <div id="stats-screen" class="screen" style="text-align: center;">
         <h2 style="color: var(--gold);">الإحصائيات العامة</h2>
         <div style="background: #0d231c; padding: 20px; border-radius: 10px; display: inline-block; margin: 20px auto; text-align: right; width: 80%;">
             <p>🎮 إجمالي المباريات: <span id="stat-matches">0</span></p>
             <p>🔥 إجمالي الشكبات: <span id="stat-chkobbas">0</span></p>
-            <p>♦ مرات أخذ 7♦ (الحية): <span id="stat-seven-d">0</span></p>
+            <p>♦ أخذ 7♦ (الحية): <span id="stat-seven-d">0</span></p>
             <p>📈 نسبة الفوز: <span id="stat-winrate">0%</span></p>
         </div>
         <button class="menu-btn" onclick="openScreen('home-screen')" style="margin: 0 auto; display: block;">العودة للقائمة</button>
     </div>
 
-    <!-- نافذة نتائج الجولة / المباراة -->
+    <!-- نافذة نتائج الجولة -->
     <div id="result-modal" class="modal">
         <div class="modal-content">
             <h2 id="result-title" style="color: var(--gold);">نتائج الجولة</h2>
@@ -356,7 +350,6 @@
 </div>
 
 <script>
-    /* --- المتغيرات الأساسية وأنظمة اللعبة --- */
     const suits = [
         { key: 'diamonds', symbol: '♦', color: 'red' },
         { key: 'hearts', symbol: '♥', color: 'red' },
@@ -381,11 +374,9 @@
         oppCaptured: [],
         playerChkobbas: 0,
         oppChkobbas: 0,
-        lastCapturer: null,
-        gameMode: '1vAI'
+        lastCapturer: null
     };
 
-    // تحميل البيانات المحفوظة إن وجدت
     if(localStorage.getItem('chkobba_save')) {
         let saved = JSON.parse(localStorage.getItem('chkobba_save'));
         gameState.score = saved.score ?? 100;
@@ -432,21 +423,20 @@
         openScreen('stats-screen');
     }
 
-    /* --- إدارة الديك والبدء --- */
     function startGame(mode) {
         document.getElementById('mode-modal').style.display = 'none';
-        gameState.gameMode = mode;
         gameState.round = 1;
         gameState.playerChkobbas = 0;
         gameState.oppChkobbas = 0;
         gameState.playerCaptured = [];
         gameState.oppCaptured = [];
+        
+        // الانتقال الفعلي لواجهة اللعب وتفعيل الشاشة فوراً
         openScreen('game-screen');
         initRound();
     }
 
     function initRound() {
-        // إنشاء 40 ورقة
         gameState.deck = [];
         let id = 1;
         suits.forEach(s => {
@@ -454,14 +444,12 @@
                 gameState.deck.push({ id: id++, suit: s.key, symbol: s.symbol, value: v, name: cardNames[v], color: s.color });
             }
         });
-        // خلط الورق (Shuffle)
         gameState.deck.sort(() => Math.random() - 0.5);
 
-        // وضع 4 أوراق على الطاولة
         gameState.table = [gameState.deck.pop(), gameState.deck.pop(), gameState.deck.pop(), gameState.deck.pop()];
         dealHands();
         updateUI();
-        logText("بدأت الجولة الجديدة. دورك في اللعب.");
+        logText("بدأت الجولة. اختر ورقة من يدك للعب.");
     }
 
     function dealHands() {
@@ -475,12 +463,10 @@
         document.getElementById('game-log').innerText = txt;
     }
 
-    /* --- نظام الأخذ وقواعد الشكبة --- */
     function playCard(index) {
         let playedCard = gameState.playerHand.splice(index, 1)[0];
         processTurn(playedCard, 'player');
 
-        // إذا انتهت أوراق اليد
         if (gameState.playerHand.length === 0 && gameState.oppHand.length === 0) {
             if (gameState.deck.length > 0) {
                 dealHands();
@@ -490,7 +476,6 @@
             }
         }
 
-        // دور الذكاء الاصطناعي (AI)
         if (gameState.oppHand.length > 0) {
             setTimeout(() => {
                 let aiCardIdx = aiChooseMove();
@@ -501,7 +486,7 @@
                     endRound();
                 }
                 updateUI();
-            }, 700);
+            }, 600);
         }
         updateUI();
     }
@@ -509,7 +494,6 @@
     function processTurn(card, owner) {
         let captured = owner === 'player' ? gameState.playerCaptured : gameState.oppCaptured;
         
-        // 1. فحص ورقة منفردة مطابقة (لها الأولوية القصوى)
         let exactIdx = gameState.table.findIndex(c => c.value === card.value);
         let matchedCards = [];
 
@@ -517,7 +501,6 @@
             matchedCards.push(gameState.table[exactIdx]);
             gameState.table.splice(exactIdx, 1);
         } else {
-            // 2. البحث عن مجموعات مطابقة
             let combo = findCombination(card.value, gameState.table);
             if (combo.length > 0) {
                 combo.forEach(c => {
@@ -532,12 +515,10 @@
             captured.push(card, ...matchedCards);
             gameState.lastCapturer = owner;
 
-            // تتبع إحصائية 7 الكارو (الحية)
             if (card.value === 7 && card.suit === 'diamonds' && owner === 'player') {
                 gameState.totalSevenDiamonds++;
             }
 
-            // فحص الشكبة (إذا أفرغت الطاولة ولم تكن نهاية الكرت الأخير)
             if (gameState.table.length === 0 && gameState.deck.length > 0) {
                 if (owner === 'player') {
                     gameState.playerChkobbas++;
@@ -546,9 +527,35 @@
                 } else {
                     gameState.oppChkobbas++;
                 }
-                logText(owner === 'player' ? "🎉 شكبة رائعة!" : "⚠️ الخصم حقق شكبة عليك!");
+                logText(owner === 'player' ? "🔥 شكبة!" : "⚠️ الخصم حقق شكبة!");
             } else {
-                logText(owner === 'player' ? `أخذت أوراق بواسطة ${card.name}` : `الخصم قام بالأخذ.`);
+                logText(owner === 'player' ? `أخذت بنجاح بـ ${card.name}` : `الخصم قام بالأخذ.`);
             }
         } else {
-            /
+            gameState.table.push(card);
+            logText(owner === 'player' ? `وضعت ${card.name} على الطاولة.` : `الخصم وضع ورقة على الطاولة.`);
+        }
+    }
+
+    function findCombination(target, list) {
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].value === target) return [list[i]];
+            for (let j = i + 1; j < list.length; j++) {
+                if (list[i].value + list[j].value === target) return [list[i], list[j]];
+            }
+        }
+        return [];
+    }
+
+    function aiChooseMove() {
+        for (let i = 0; i < gameState.oppHand.length; i++) {
+            let card = gameState.oppHand[i];
+            if (gameState.table.some(c => c.value === card.value)) return i;
+            if (findCombination(card.value, gameState.table).length > 0) return i;
+        }
+        return Math.floor(Math.random() * gameState.oppHand.length);
+    }
+
+    function triggerChkobbaAnimation() {
+        let alertBox = document.getElementById('chkobba-alert');
+        alertBox.classList.add('show
